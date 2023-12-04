@@ -2,11 +2,13 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.common.by import By
 import time
-import imaplib, email, email.parser, email.policy
+import imaplib
+import email
+import email.parser
+import email.policy
 import html2text
 import os
 from dotenv import load_dotenv
-
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
@@ -24,14 +26,14 @@ NIC_MD_NS4_HOST = os.environ.get("NIC_MD_NS4_HOST ")
 NIC_MD_NS4_IP = os.environ.get("NIC_MD_NS4_IP")
 HEADLESS = os.environ.get("HEADLESS")
 
+
 def search_imap():
     mail = imaplib.IMAP4_SSL(IMAP_SERVER)
-    mail.login(IMAP_LOGIN , IMAP_PASSWORD)
+    mail.login(IMAP_LOGIN, IMAP_PASSWORD)
     mail.list()
     mail.select('Inbox')  # specify inbox
     typ, [data] = mail.search(None, "UNSEEN")
-#    typ, [data] = mail.search(None, "(ALL)")
-
+    #    typ, [data] = mail.search(None, "(ALL)")
 
     for num in data.split():
         # fetch whole message as RFC822 format
@@ -42,14 +44,15 @@ def search_imap():
         up_to_word = "torul cod:"
         x = text.find(up_to_word)
         y = text[x:2000].find(":")
-        z = text[x+y+1:2000]
+        z = text[x + y + 1:2000]
         f = z[0:6]
-        #print(f+"$")
+        # print(f+"$")
 
     mail.close()
     mail.logout()
 
     return f
+
 
 def email2Text(rfc822mail):
     msg_data = email.message_from_bytes(rfc822mail, policy=email.policy.default)
@@ -72,13 +75,10 @@ def email2Text(rfc822mail):
 
     return mail_value
 
+
 def msg2bodyText(msg):
-    ct = msg.get_content_type()
-    cc = msg.get_content_charset()  # charset in Content-Type header
-    cte = msg.get("Content-Transfer-Encoding")
     if msg.get_content_maintype() != "text":
         return None
-
     ddd = msg.get_content()
 
     if msg.get_content_subtype() == "html":
@@ -99,12 +99,12 @@ def header_decode(header):
     return hdr
 
 
-service = FirefoxService(executable_path="/snap/bin/geckodriver",)
+service = FirefoxService(executable_path="/snap/bin/geckodriver", )
 options = webdriver.FirefoxOptions()
 
-if HEADLESS=='true':
-     options.add_argument("-headless")
-     print("Browser Headless mode. Just wait !!!")
+if HEADLESS == 'true':
+    options.add_argument("-headless")
+    print("Browser Headless mode. Just wait !!!")
 
 browser = webdriver.Firefox(service=service, options=options)
 browser.get('https://nic.md/ro/login2/')
@@ -120,11 +120,12 @@ login.send_keys(NIC_MD_EMAIL)
 password = browser.find_element(By.CSS_SELECTOR, '[name="login_password"]')
 password.send_keys(NIC_MD_PASSWORD)
 time.sleep(1)
-iframe = browser.find_element(By.XPATH , '/html/body/div[2]/div/div/div[2]/div/div/div/div/div/form/div[3]/div/div/div/div/iframe')
+iframe = browser.find_element(By.XPATH,
+                              '/html/body/div[2]/div/div/div[2]/div/div/div/div/div/form/div[3]/div/div/div/div/iframe')
 time.sleep(1)
 browser.switch_to.frame(iframe)
 time.sleep(1)
-capcha = browser.find_element(By.CSS_SELECTOR , '.recaptcha-checkbox-border')
+capcha = browser.find_element(By.CSS_SELECTOR, '.recaptcha-checkbox-border')
 capcha.click()
 time.sleep(4)
 browser.switch_to.default_content()
@@ -133,19 +134,17 @@ submit = browser.find_element(By.CSS_SELECTOR, '[type="submit"]')
 time.sleep(1)
 submit.click()
 
-
-browser.get('https://nic.md/ro/nameservers/'+NIC_MD_TLD)
+browser.get('https://nic.md/ro/nameservers/' + NIC_MD_TLD)
 time.sleep(4)
 
 ns3 = browser.find_element(By.ID, 'ns3_host')
 ns3value = ns3.get_attribute("value")
 
-if not ns3value :
+if not ns3value:
     print("ns3 empty")
     ns3 = browser.find_element(By.ID, 'ns_more')
     ns3.click()
     time.sleep(3)
-
 
     ns3 = browser.find_element(By.ID, 'ns3_host')
     ns3.clear()
@@ -170,7 +169,7 @@ if not ns3value :
     ns4ip.click()
     time.sleep(20)
 
-    input_code = browser.find_element(By.CSS_SELECTOR , 'input.form-control')
+    input_code = browser.find_element(By.CSS_SELECTOR, 'input.form-control')
     input_code.click()
     cod = search_imap()
     time.sleep(4)
