@@ -86,7 +86,6 @@ def msg2bodyText(msg):
             ddd = html2text.html2text(ddd)
         except:
             print("error in html2text")
-
     return ddd
 
 
