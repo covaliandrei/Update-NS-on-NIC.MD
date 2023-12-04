@@ -7,3 +7,4 @@ mail-in-a-box setup
 
 It resolves the problem, that nic.md deletes this records daily.
 The script can be run in headless mode by cron.
+-
