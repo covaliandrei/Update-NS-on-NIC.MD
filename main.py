@@ -22,6 +22,7 @@ NIC_MD_NS3_HOST = os.environ.get("NIC_MD_NS3_HOST")
 NIC_MD_NS3_IP = os.environ.get("NIC_MD_NS3_IP")
 NIC_MD_NS4_HOST = os.environ.get("NIC_MD_NS4_HOST ")
 NIC_MD_NS4_IP = os.environ.get("NIC_MD_NS4_IP")
+HEADLESS = os.environ.get("HEADLESS")
 
 def search_imap():
     mail = imaplib.IMAP4_SSL(IMAP_SERVER)
@@ -99,7 +100,13 @@ def header_decode(header):
 
 
 service = FirefoxService(executable_path="/snap/bin/geckodriver",)
-browser = webdriver.Firefox(service=service)
+options = webdriver.FirefoxOptions()
+
+if HEADLESS=='true':
+     options.add_argument("-headless")
+     print("Browser Headless mode. Just wait !!!")
+
+browser = webdriver.Firefox(service=service, options=options)
 browser.get('https://nic.md/ro/login2/')
 
 time.sleep(6)
