@@ -177,6 +177,7 @@ if not ns3value:
 
     finish = browser.find_element(By.ID, 'submit_button')
     finish.click()
+    print("Update ns3 and ns4 successfully !!!")
     time.sleep(20)
 else:
     print("ns3 value is: " + ns3value)
