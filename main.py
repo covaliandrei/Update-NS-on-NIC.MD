@@ -23,7 +23,7 @@ NIC_MD_PASSWORD = os.environ.get("NIC_MD_PASSWORD")
 NIC_MD_TLD = os.environ.get("NIC_MD_TLD")
 NIC_MD_NS3_HOST = os.environ.get("NIC_MD_NS3_HOST")
 NIC_MD_NS3_IP = os.environ.get("NIC_MD_NS3_IP")
-NIC_MD_NS4_HOST = os.environ.get("NIC_MD_NS4_HOST ")
+NIC_MD_NS4_HOST = os.environ.get("NIC_MD_NS4_HOST")
 NIC_MD_NS4_IP = os.environ.get("NIC_MD_NS4_IP")
 HEADLESS = os.environ.get("HEADLESS")
 
