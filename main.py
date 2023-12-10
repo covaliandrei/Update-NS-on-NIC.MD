@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.common.by import By
@@ -98,89 +99,96 @@ def header_decode(header):
         hdr += text
     return hdr
 
+# Infinite loop, at the end of each iteration sleep for 24 hours
+while True:
+    service = FirefoxService(executable_path="/snap/bin/geckodriver", )
+    options = webdriver.FirefoxOptions()
 
-service = FirefoxService(executable_path="/snap/bin/geckodriver", )
-options = webdriver.FirefoxOptions()
+    if HEADLESS == 'true':
+        options.add_argument("-headless")
+        now = datetime.now()
+        print(now.strftime("%d/%m/%Y %H:%M:%S"), "Browser Headless mode. Just wait !!!")
 
-if HEADLESS == 'true':
-    options.add_argument("-headless")
-    print("Browser Headless mode. Just wait !!!")
+    browser = webdriver.Firefox(service=service, options=options)
+    browser.get('https://nic.md/ro/login2/')
 
-browser = webdriver.Firefox(service=service, options=options)
-browser.get('https://nic.md/ro/login2/')
-
-time.sleep(6)
-myLink = browser.find_element(By.PARTIAL_LINK_TEXT, 'Accept!')
-time.sleep(3)
-myLink.click()
-time.sleep(3)
-
-login = browser.find_element(By.CSS_SELECTOR, '[name="login_email"]')
-login.send_keys(NIC_MD_EMAIL)
-password = browser.find_element(By.CSS_SELECTOR, '[name="login_password"]')
-password.send_keys(NIC_MD_PASSWORD)
-time.sleep(1)
-iframe = browser.find_element(By.XPATH,
-                              '/html/body/div[2]/div/div/div[2]/div/div/div/div/div/form/div[3]/div/div/div/div/iframe')
-time.sleep(1)
-browser.switch_to.frame(iframe)
-time.sleep(1)
-capcha = browser.find_element(By.CSS_SELECTOR, '.recaptcha-checkbox-border')
-capcha.click()
-time.sleep(4)
-browser.switch_to.default_content()
-time.sleep(1)
-submit = browser.find_element(By.CSS_SELECTOR, '[type="submit"]')
-time.sleep(1)
-submit.click()
-
-browser.get('https://nic.md/ro/nameservers/' + NIC_MD_TLD)
-time.sleep(4)
-
-ns3 = browser.find_element(By.ID, 'ns3_host')
-ns3value = ns3.get_attribute("value")
-
-if not ns3value:
-    print("ns3 empty")
-    ns3 = browser.find_element(By.ID, 'ns_more')
-    ns3.click()
+    time.sleep(6)
+    myLink = browser.find_element(By.PARTIAL_LINK_TEXT, 'Accept!')
+    time.sleep(3)
+    myLink.click()
     time.sleep(3)
 
-    ns3 = browser.find_element(By.ID, 'ns3_host')
-    ns3.clear()
-    ns3.send_keys(NIC_MD_NS3_HOST)
-
-    ns3ip = browser.find_element(By.ID, 'ns3_ip')
-    ns3ip.click()
-    ns3ip.clear()
-    ns3ip.send_keys(NIC_MD_NS3_IP)
-
-    ns4 = browser.find_element(By.ID, 'ns4_host')
-    ns4.clear()
-    ns4.send_keys(NIC_MD_NS4_HOST)
-
-    ns4ip = browser.find_element(By.ID, 'ns4_ip')
-    ns4ip.click()
-    ns4ip.clear()
-    ns4ip.send_keys(NIC_MD_NS4_IP)
-    time.sleep(2)
-
-    ns4ip = browser.find_element(By.ID, 'submit_button')
-    ns4ip.click()
-    time.sleep(20)
-
-    input_code = browser.find_element(By.CSS_SELECTOR, 'input.form-control')
-    input_code.click()
-    cod = search_imap()
+    login = browser.find_element(By.CSS_SELECTOR, '[name="login_email"]')
+    login.send_keys(NIC_MD_EMAIL)
+    password = browser.find_element(By.CSS_SELECTOR, '[name="login_password"]')
+    password.send_keys(NIC_MD_PASSWORD)
+    time.sleep(1)
+    iframe = browser.find_element(By.XPATH,
+                                  '/html/body/div[2]/div/div/div[2]/div/div/div/div/div/form/div[3]/div/div/div/div/iframe')
+    time.sleep(1)
+    browser.switch_to.frame(iframe)
+    time.sleep(1)
+    capcha = browser.find_element(By.CSS_SELECTOR, '.recaptcha-checkbox-border')
+    capcha.click()
     time.sleep(4)
-    input_code.send_keys(cod)
-    time.sleep(10)
+    browser.switch_to.default_content()
+    time.sleep(1)
+    submit = browser.find_element(By.CSS_SELECTOR, '[type="submit"]')
+    time.sleep(1)
+    submit.click()
 
-    finish = browser.find_element(By.ID, 'submit_button')
-    finish.click()
-    print("Update ns3 and ns4 successfully !!!")
-    time.sleep(20)
-else:
-    print("ns3 value is: " + ns3value)
+    browser.get('https://nic.md/ro/nameservers/' + NIC_MD_TLD)
+    time.sleep(4)
 
-browser.quit()
+    ns3 = browser.find_element(By.ID, 'ns3_host')
+    ns3value = ns3.get_attribute("value")
+
+    if not ns3value:
+        now = datetime.now()
+        print(now.strftime("%d/%m/%Y %H:%M:%S"), "ns3 empty")
+        ns3 = browser.find_element(By.ID, 'ns_more')
+        ns3.click()
+        time.sleep(3)
+
+        ns3 = browser.find_element(By.ID, 'ns3_host')
+        ns3.clear()
+        ns3.send_keys(NIC_MD_NS3_HOST)
+
+        ns3ip = browser.find_element(By.ID, 'ns3_ip')
+        ns3ip.click()
+        ns3ip.clear()
+        ns3ip.send_keys(NIC_MD_NS3_IP)
+
+        ns4 = browser.find_element(By.ID, 'ns4_host')
+        ns4.clear()
+        ns4.send_keys(NIC_MD_NS4_HOST)
+
+        ns4ip = browser.find_element(By.ID, 'ns4_ip')
+        ns4ip.click()
+        ns4ip.clear()
+        ns4ip.send_keys(NIC_MD_NS4_IP)
+        time.sleep(2)
+
+        ns4ip = browser.find_element(By.ID, 'submit_button')
+        ns4ip.click()
+        time.sleep(20)
+
+        input_code = browser.find_element(By.CSS_SELECTOR, 'input.form-control')
+        input_code.click()
+        cod = search_imap()
+        time.sleep(4)
+        input_code.send_keys(cod)
+        time.sleep(10)
+
+        finish = browser.find_element(By.ID, 'submit_button')
+        finish.click()
+        print("Update ns3 and ns4 successfully !!!")
+        time.sleep(20)
+    else:
+        now = datetime.now()
+        print(now.strftime("%d/%m/%Y %H:%M:%S"), "ns3 value is: " + ns3value)
+
+    browser.quit()
+    now = datetime.now()
+    print(now.strftime("%d/%m/%Y %H:%M:%S"), "Browser was closed !!!  Sleep for 24 hours  ")
+    time.sleep(86400)

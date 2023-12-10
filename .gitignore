@@ -1,4 +1,6 @@
 .env
 .venv
+main1.py
+cron.log
 venv/
 venv.bak/
